@@ -22,7 +22,8 @@ def getBet(maxBet):
         bet = int(bet)
         if 1 <= bet <= maxBet:
             return bet # Player entered a valid bet
-        
+
+
 def getDeck():
     '''Return a list of (rank, suit) tuples for all 52 cards'''
     deck = []
@@ -33,7 +34,47 @@ def getDeck():
             deck.append((rank,suit)) # Add the face and ace cards
     random.shuffle(deck)
     return deck
-     
+
+
+def displayCards(cards):
+    '''Display all the cards in the cards list'''
+    rows = ['','','','',''] # The text to display on each row
+
+    for i, card in enumerate(cards):
+        rows[0] += ' ___  ' # Print the top line of the card
+        if card == BACKSIDE:
+            # Print a card's back
+            rows[1] += '|## | '
+            rows[2] += '|###| '
+            rows[3] += '|_##| '
+        else:
+            # Print the card's front
+            rank, suit = card # card is a tuple data structure
+            rows[1] += '|{}  | '.format(rank)
+            rows[2] += '| {} | '.format(suit)
+            rows[3] += '|__{}| '.format(rank)
+
+    # Print each row on the screen
+    for row in rows:
+        print(row)
+
+
+def displayHands(playerHand, dealerHand, showDealerHand):
+    '''Show the dealer's and player's cards. Hide the dealer's first card if showDealerHand is False'''
+    print()
+    if showDealerHand:
+        print('DEALER:', '###')
+        displayCards(dealerHand)
+    else:
+        # Hide the dealer's first card
+        print('DEALER:','???')
+        displayCards([BACKSIDE] + dealerHand[1:])
+
+    # Show the player's cards
+    print('PLAYER:', '###')
+    displayCards(playerHand)
+
+
 def main():
     print('''Blackjack
   
@@ -66,6 +107,13 @@ def main():
         deck = getDeck()
         dealerHand = [deck.pop(), deck.pop()]
         playerHand = [deck.pop(), deck.pop()]
+
+        # Handle player actions
+        print('Bet:', bet)
+        while True: # Keep looping until player stands or busts
+            displayHands(playerHand, dealerHand, False)
+            print()
+            break
 
 
 if __name__ == "__main__":
