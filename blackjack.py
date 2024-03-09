@@ -99,6 +99,25 @@ def displayHands(playerHand, dealerHand, showDealerHand):
     displayCards(playerHand)
 
 
+def getMove(playerHand, money):
+    '''Asks the player for their move, and return 'H' for hit, 'S' for stand, and 'D' for double down.'''
+    while True: # Keep looping until the player enters a valid move
+        # Determine what moves the player can make
+        moves = ['(H)it', '(S)tand']
+
+        # The player can double down on their first move, which we can tell because the player will have exactly two cards
+        if len(playerHand) == 2 and money > 0:
+            moves.append('(D)ouble down')
+
+        # Get the player's move
+        movePrompt = ', '.join(moves) + '> '
+        move = input(movePrompt).upper()
+        if move in ('H',' S'):
+            return move # Player has entered a valid move
+        if move == 'D' and '(D)ouble down' in moves:
+            return move # Player has entered a valid move
+
+
 def main():
     print('''Blackjack
   
@@ -137,8 +156,39 @@ def main():
         while True: # Keep looping until player stands or busts
             displayHands(playerHand, dealerHand, False)
             print()
-            break
+        
+            # Check if the player has bust
+            if getHandValue(playerHand) > 21:
+                break
 
+            # Get the player's move, either H, S or D:
+            move = getMove(playerHand, money - bet)
+            print(move)
+
+            # Handle the player actions
+            if move == 'D':
+                # player is doubling down, they can increase their bet
+                additionalBet = getBet(min(bet, (money-bet)))
+                bet += additionalBet
+                print('Bet increased to {}'.format(bet))
+                print('Bet:', bet)
+
+            if move in ('H','D'):
+                # Hit/Doubling down takes another card
+                newCard = deck.pop()
+                rank, suit = newCard
+                print('You drew a {} of {}'.format(rank, suit))
+                playerHand.append(newCard)
+
+            if getHandValue(playerHand) > 21:
+                # The player has busted
+                continue
+
+            if move in ('S','D'):
+                # Stand/doubling down stops the player's turn
+                break
+
+        # Handle the dealer's action
 
 if __name__ == "__main__":
     main()
