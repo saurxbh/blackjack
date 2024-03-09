@@ -189,6 +189,24 @@ def main():
                 break
 
         # Handle the dealer's action
+        if getHandValue(playerHand) <= 21:
+            while getHandValue(dealerHand) < 17:
+                # The dealer hits
+                print('Dealer hits...')
+                dealerHand.append(deck.pop())
+                displayHands(playerHand, dealerHand, False)
+
+                if getHandValue(dealerHand) > 21:
+                    break # The dealer has busted
+                input('Press enter to continue...')
+                print('\n\n')
+
+        # Show the final hands
+        displayHands(playerHand, dealerHand, True)
+
+        playerValue = getHandValue(playerHand)
+        dealerValue = getHandValue(dealerHand)
+
 
 if __name__ == "__main__":
     main()
