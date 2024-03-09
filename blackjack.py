@@ -112,7 +112,7 @@ def getMove(playerHand, money):
         # Get the player's move
         movePrompt = ', '.join(moves) + '> '
         move = input(movePrompt).upper()
-        if move in ('H',' S'):
+        if move in ('H','S'):
             return move # Player has entered a valid move
         if move == 'D' and '(D)ouble down' in moves:
             return move # Player has entered a valid move
@@ -206,6 +206,21 @@ def main():
 
         playerValue = getHandValue(playerHand)
         dealerValue = getHandValue(dealerHand)
+        # Handle whether the player won, lost or tied
+        if dealerValue > 21:
+            print('Dealer busts, you win ${}!'. format(bet))
+            money += bet
+        elif (playerValue > 21) or (playerValue < dealerValue):
+            print('You lost!')
+            money -= bet
+        elif playerValue > dealerValue:
+            print('You won ${}!'.format(bet))
+            money += bet
+        elif playerValue == dealerValue:
+            print('It\'s a tie, the bet is returned to you.')
+
+        input('Press enter to continue...')
+        print('\n\n')
 
 
 if __name__ == "__main__":
