@@ -36,6 +36,30 @@ def getDeck():
     return deck
 
 
+def getHandValue(cards):
+    '''Returns the value of the cards. Face cards are worth 10, aces are worth 11 or 1 (this function picks the most suitable ace value)'''
+    value = 0
+    numberOfAces = 0
+
+    # Add the value for the non-ace cards:
+    for card in cards:
+        rank = card[0] # card is a (rank, suit) tuple
+        if rank == 'A':
+            numberOfAces += 1
+        elif rank in ('K', 'Q', 'J'): # Face cards are worth 10 points
+            value += 10
+        else:
+            value += int(rank) # Numbered cards are worth their number
+
+    # Add the value for the aces
+    value += numberOfAces # Add 1 for each ace
+    for i in range(numberOfAces):
+        # If another 10 can be added without busting, do so
+        if value + 10 <= 21:
+            value += 10
+    return value
+
+
 def displayCards(cards):
     '''Display all the cards in the cards list'''
     rows = ['','','','',''] # The text to display on each row
@@ -63,7 +87,7 @@ def displayHands(playerHand, dealerHand, showDealerHand):
     '''Show the dealer's and player's cards. Hide the dealer's first card if showDealerHand is False'''
     print()
     if showDealerHand:
-        print('DEALER:', '###')
+        print('DEALER:', getHandValue(dealerHand))
         displayCards(dealerHand)
     else:
         # Hide the dealer's first card
@@ -71,7 +95,7 @@ def displayHands(playerHand, dealerHand, showDealerHand):
         displayCards([BACKSIDE] + dealerHand[1:])
 
     # Show the player's cards
-    print('PLAYER:', '###')
+    print('PLAYER:', getHandValue(playerHand))
     displayCards(playerHand)
 
 
