@@ -22,6 +22,17 @@ def getBet(maxBet):
         bet = int(bet)
         if 1 <= bet <= maxBet:
             return bet # Player entered a valid bet
+        
+def getDeck():
+    '''Return a list of (rank, suit) tuples for all 52 cards'''
+    deck = []
+    for suit in (HEARTS, DIAMONDS, SPADES, CLUBS):
+        for rank in range(2,11):
+            deck.append((str(rank),suit)) # Add the numbered cards
+        for rank in ('J', 'Q', 'K', 'A'):
+            deck.append((rank,suit)) # Add the face and ace cards
+    random.shuffle(deck)
+    return deck
      
 def main():
     print('''Blackjack
@@ -50,6 +61,11 @@ def main():
         # Let the player enter their bet for this round
         print('Money:', money)
         bet = getBet(money)
+
+        # Give the dealer and teacher two cards from the deck each
+        deck = getDeck()
+        dealerHand = [deck.pop(), deck.pop()]
+        playerHand = [deck.pop(), deck.pop()]
 
 
 if __name__ == "__main__":
